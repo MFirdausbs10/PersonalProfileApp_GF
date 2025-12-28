@@ -1,15 +1,13 @@
 package model;
 
 public class ProfileBean {
+
     private String name;
     private String studentId;
     private String programme;
     private String email;
     private String hobbies;
     private String introduction;
-
-    public ProfileBean() {
-    }
 
     public String getName() {
         return name;

@@ -1,6 +1,5 @@
 /build/
 /dist/
-/nbproject/private/
-/AppData/
-/Derby/
-*.log
+/*.war
+/*.class
+/mysql-connector*.jar

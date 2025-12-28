@@ -1,11 +1,14 @@
 package controller;
 
-import model.ProfileBean;
 import java.io.IOException;
-import java.sql.*;
-import javax.servlet.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/ProfileServlet")
 public class ProfileServlet extends HttpServlet {
@@ -14,25 +17,15 @@ public class ProfileServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String name = request.getParameter("name");
-        String studentId = request.getParameter("studentId");
+        String studentId = request.getParameter("student_id");
         String programme = request.getParameter("programme");
         String email = request.getParameter("email");
         String hobbies = request.getParameter("hobbies");
         String introduction = request.getParameter("introduction");
 
-        ProfileBean profile = new ProfileBean();
-        profile.setName(name);
-        profile.setStudentId(studentId);
-        profile.setProgramme(programme);
-        profile.setEmail(email);
-        profile.setHobbies(hobbies);
-        profile.setIntroduction(introduction);
-
         try {
-            // ✅ DERBY DRIVER
             Class.forName("org.apache.derby.jdbc.ClientDriver");
 
-            // ✅ DERBY CONNECTION
             Connection conn = DriverManager.getConnection(
                 "jdbc:derby://localhost:1527/student_profiles",
                 "app",
@@ -41,7 +34,7 @@ public class ProfileServlet extends HttpServlet {
 
             String sql = "INSERT INTO profiles "
                        + "(name, student_id, programme, email, hobbies, introduction) "
-                       + "VALUES (?,?,?,?,?,?)";
+                       + "VALUES (?, ?, ?, ?, ?, ?)";
 
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, name);
@@ -54,12 +47,10 @@ public class ProfileServlet extends HttpServlet {
             ps.executeUpdate();
             conn.close();
 
+            response.sendRedirect("viewProfiles.jsp");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        request.setAttribute("profile", profile);
-        RequestDispatcher rd = request.getRequestDispatcher("profile.jsp");
-        rd.forward(request, response);
     }
 }
